@@ -4,8 +4,8 @@ var gulp = require('gulp'),
     $ = require('gulp-load-plugins')(),
     babel = require('babel-core/register'),
     isparta = require('isparta'),
-    srcFiles = './src/**/*.js',
-    testFiles = './test/**/*.spec.js';
+    srcFiles = './src/**/!(*.spec).js',
+    testFiles = './src/**/*.spec.js';
 
 gulp.task('clean', function () {
   require('del').sync('lib');

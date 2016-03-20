@@ -60,8 +60,8 @@ const logPostReduceToConsole = ({ name, state, nextState }) => {
   console.groupEnd();
 };
 
-const shouldLog = () => (
-  config().predicate()
+const shouldLog = (...args) => (
+  R.apply(config().predicate, args)
 );
 
 const logPreReduce = R.when(

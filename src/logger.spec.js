@@ -1,7 +1,7 @@
 import chai from 'chai';
 import sinon from 'sinon';
 import Bacon from 'baconjs';
-import * as Logger from '../src/main';
+import * as Logger from './main';
 
 describe('Logger', () => {
 
