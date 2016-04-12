@@ -1,5 +1,10 @@
 import R from 'ramda';
 import Bacon from 'baconjs';
+import chalk from 'chalk';
+
+var color = new chalk.constructor({
+  enabled: true
+});
 
 const hasNoSkipLog = R.complement(
   R.pathEq(['action', 'skipLog'], true)
@@ -37,27 +42,62 @@ const skipDupeAction = (func) => {
   };
 };
 
-const consoleGroup = (description) => (
+const hasConsoleGroup = () => (
+  'group' in console
+);
+
+const callConsoleGroup = (description) => (
   config().collapsed
     ? console.groupCollapsed(description)
     : console.group(description)
 );
 
+const callConsoleGroupLog = (description) => (
+  console.log(color.bold.cyan(description.trim()))
+);
+
+const consoleLog = (...args) => (
+  console.log.apply(console, args)
+);
+
+const consoleInfo = (...args) => (
+  console.info.apply(console, args)
+);
+
+const consoleGroup = R.ifElse(
+  hasConsoleGroup,
+  callConsoleGroup,
+  callConsoleGroupLog
+);
+
+const callConsoleGroupEnd = () => (
+  console.groupEnd()
+);
+
+const consoleGroupEnd = R.partial(
+  R.ifElse(
+    hasConsoleGroup,
+    callConsoleGroupEnd,
+    R.always()
+  ),
+  [null]
+);
+
 // log only once for each action.
 const logPreReduceToConsole = skipDupeAction(
   ({ action }) => {
-    console.log('\n');
+    consoleLog('\n');
     consoleGroup('ACTION_' + action.type);
-    console.info('dispatch:', action);
-    console.groupEnd();
+    consoleInfo('dispatch:', action);
+    consoleGroupEnd();
   }
 );
 
 const logPostReduceToConsole = ({ name, state, nextState }) => {
   consoleGroup(' STORE_' + name);
-  console.log('from state:', state);
-  console.log('next state:', nextState);
-  console.groupEnd();
+  consoleLog('from state:', state);
+  consoleLog('next state:', nextState);
+  consoleGroupEnd();
 };
 
 const shouldLog = (...args) => (
