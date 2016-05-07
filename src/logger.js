@@ -1,10 +1,9 @@
 import R from 'ramda';
 import Bacon from 'baconjs';
-import chalk from 'chalk';
 
-var color = new chalk.constructor({
-  enabled: true
-});
+var boldCyan = (text) => (
+  `\x1b[1m\x1b[36m${text}\x1b[39m\x1b[22m`
+);
 
 const hasNoSkipLog = R.complement(
   R.pathEq(['action', 'skipLog'], true)
@@ -53,7 +52,7 @@ const callConsoleGroup = (description) => (
 );
 
 const callConsoleGroupLog = (description) => (
-  console.log(color.bold.cyan(description.trim()))
+  console.log(boldCyan(description.trim()))
 );
 
 const consoleLog = (...args) => (
