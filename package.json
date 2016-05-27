@@ -49,7 +49,6 @@
     "sinon": "^1.17.3"
   },
   "peerDependencies": {
-    "baconjs": "^0.7.83",
-    "react": "^0.14.7"
+    "baconjs": "^0.7.83"
   }
 }
