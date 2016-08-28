@@ -1,134 +1,145 @@
-import R from 'ramda';
-import Bacon from 'baconjs';
+import R from 'ramda'
+import Bacon from 'baconjs'
 
 var boldCyan = (text) => (
   `\x1b[1m\x1b[36m${text}\x1b[39m\x1b[22m`
-);
+)
 
 const hasNoSkipLog = R.complement(
   R.pathEq(['action', 'skipLog'], true)
-);
-
-const mergeParams = (params, addition) => (
-  Object.assign({}, params, addition)
-);
+)
 
 const mergeConfig = R.ifElse(
-  R.nthArg(1),
-  mergeParams,
+  R.pipe(R.nthArg(1), R.is(Object)),
+  R.merge,
   R.nthArg(0)
-);
+)
 
 export const config = (() => {
   let params = {
     collapsed: false,
     predicate: hasNoSkipLog
-  };
+  }
 
   return (addition) => (
     params = mergeConfig(params, addition)
-  );
-})();
+  )
+})()
 
 const skipDupeAction = (func) => {
-  let prev = null;
+  let prev = null
 
   return (args) => {
     if (!prev || prev.id !== args.action.id) {
-      prev = args.action;
-      func(args);
+      prev = args.action
+      func(args)
     }
-  };
-};
+  }
+}
 
-const hasConsoleGroup = () => (
-  'group' in console
-);
+const hasConsoleGroup = R.partial(
+  R.anyPass([
+    R.propIs(Function, 'group'),
+    R.propIs(Function, 'groupCollapsed')]),
+  [console]
+)
+
+const hasConsoleGroupEnd = R.partial(
+  R.propIs(Function, 'groupEnd'),
+  [console]
+)
 
 const callConsoleGroup = (description) => (
   config().collapsed
     ? console.groupCollapsed(description)
     : console.group(description)
-);
+)
 
-const callConsoleGroupLog = (description) => (
-  console.log(boldCyan(description.trim()))
-);
+const callConsoleGroupLog = (description) => {
+  const text = boldCyan(description.trim())
+  return config().consoleLog
+    ? config().consoleLog(text)
+    : console.log(text)
+}
 
 const consoleLog = (...args) => (
-  console.log.apply(console, args)
-);
+  config().consoleLog
+    ? config().consoleLog.apply(config(), args)
+    : console.log.apply(console, args)
+)
 
 const consoleInfo = (...args) => (
-  console.info.apply(console, args)
-);
+  config().consoleInfo
+    ? config().consoleInfo.apply(config(), args)
+    : console.info.apply(console, args)
+)
 
 const consoleGroup = R.ifElse(
   hasConsoleGroup,
   callConsoleGroup,
   callConsoleGroupLog
-);
+)
 
 const callConsoleGroupEnd = () => (
   console.groupEnd()
-);
+)
 
 const consoleGroupEnd = R.partial(
   R.ifElse(
-    hasConsoleGroup,
+    hasConsoleGroupEnd,
     callConsoleGroupEnd,
-    R.always()
+    R.F
   ),
   [null]
-);
+)
 
 // log only once for each action.
 const logPreReduceToConsole = skipDupeAction(
   ({ action }) => {
-    consoleLog('\n');
-    consoleGroup('ACTION_' + action.type);
-    consoleInfo('dispatch:', action);
-    consoleGroupEnd();
+    consoleLog('\n')
+    consoleGroup('ACTION_' + action.type)
+    consoleInfo('dispatch:', action)
+    consoleGroupEnd()
   }
-);
+)
 
 const logPostReduceToConsole = ({ name, state, nextState }) => {
-  consoleGroup(' STORE_' + name);
-  consoleLog('from state:', state);
-  consoleLog('next state:', nextState);
-  consoleGroupEnd();
-};
+  consoleGroup(' STORE_' + name)
+  consoleLog('from state:', state)
+  consoleLog('next state:', nextState)
+  consoleGroupEnd()
+}
 
 const shouldLog = (...args) => (
   R.apply(config().predicate, args)
-);
+)
 
 const logPreReduce = R.when(
   shouldLog,
   logPreReduceToConsole
-);
+)
 
 const logPostReduce = R.when(
   shouldLog,
   logPostReduceToConsole
-);
+)
 
 export const getPreReduce = () => {
-  let preStream = new Bacon.Bus();
+  const preStream = new Bacon.Bus()
 
   return {
     input: preStream,
     output: preStream
       .doAction(logPreReduce)
-  };
-};
+  }
+}
 
 export const getPostReduce = () => {
-  let postStream = new Bacon.Bus();
+  const postStream = new Bacon.Bus()
 
   return {
     input: postStream,
     output: postStream
       .doAction(logPostReduce)
-  };
-};
+  }
+}
