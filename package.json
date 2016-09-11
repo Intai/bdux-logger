@@ -4,7 +4,7 @@
   "description": "A Bdux Middleware",
   "main": "lib/main.js",
   "scripts": {
-    "test": "gulp test",
+    "test": "gulp cover",
     "prepublish": "gulp build"
   },
   "repository": {
