@@ -104,10 +104,12 @@ const logPreReduceToConsole = skipDupeAction(
 )
 
 const logPostReduceToConsole = ({ name, state, nextState }) => {
-  consoleGroup(' STORE_' + name)
-  consoleLog('from state:', state)
-  consoleLog('next state:', nextState)
-  consoleGroupEnd()
+  if (state !== nextState) {
+    consoleGroup(' STORE_' + name)
+    consoleLog('from state:', state)
+    consoleLog('next state:', nextState)
+    consoleGroupEnd()
+  }
 }
 
 const shouldLog = (...args) => (

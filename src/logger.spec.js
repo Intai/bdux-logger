@@ -92,8 +92,16 @@ describe('Logger', () => {
   it('should log store name', () => {
     const postReduce = Logger.getPostReduce()
     postReduce.output.onValue()
-    postReduce.input.push({ name: 'test' })
+    postReduce.input.push({ name: 'test', state: {} })
     chai.expect(consoleLog.calledWith('\u001b[1m\u001b[36mSTORE_test\u001b[39m\u001b[22m')).to.be.true
+  })
+
+  it('should not log if state is unchanged', () => {
+    const postReduce = Logger.getPostReduce()
+    const state = {}
+    postReduce.output.onValue()
+    postReduce.input.push({ name: 'test', state, nextState: state })
+    chai.expect(consoleLog.called).to.be.false
   })
 
   it('should log store from state', () => {
