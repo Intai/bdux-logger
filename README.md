@@ -8,12 +8,12 @@ A [Bdux](https://github.com/Intai/bdux) middleware to log actions and state chan
 
 ## Installation
 To install as an [npm](https://www.npmjs.com/) package:
-```
+```sh
 npm install --save-dev bdux-logger
 ```
 
 ## Usage
-``` javascript
+```javascript
 import * as Logger from 'bdux-logger';
 import { applyMiddleware } from 'bdux';
 
