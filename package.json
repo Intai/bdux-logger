@@ -39,7 +39,7 @@
     "chai": "^4.0.2",
     "coveralls": "^3.0.0",
     "del": "^3.0.0",
-    "eslint": "^4.1.0",
+    "eslint": "^4.16.0",
     "gulp": "^3.9.1",
     "gulp-babel": "^7.0.0",
     "gulp-eslint": "^4.0.0",
