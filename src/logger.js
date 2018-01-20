@@ -37,16 +37,14 @@ const skipDupeAction = (func) => {
   }
 }
 
-const hasConsoleGroup = R.partial(
-  R.anyPass([
-    R.propIs(Function, 'group'),
-    R.propIs(Function, 'groupCollapsed')]),
-  [console]
+const hasConsoleGroup = () => (
+  typeof window !== 'undefined'
+    && typeof console.group === 'function'
+    && typeof console.groupCollapsed === 'function'
 )
 
-const hasConsoleGroupEnd = R.partial(
-  R.propIs(Function, 'groupEnd'),
-  [console]
+const hasConsoleGroupEnd = () => (
+  typeof console.groupEnd === 'function'
 )
 
 const callConsoleGroup = (description) => (

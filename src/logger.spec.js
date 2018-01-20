@@ -3,6 +3,7 @@
 import chai from 'chai'
 import sinon from 'sinon'
 import Bacon from 'baconjs'
+import { JSDOM } from 'jsdom'
 import * as Logger from './main'
 
 describe('Logger', () => {
@@ -71,6 +72,25 @@ describe('Logger', () => {
     chai.expect(consoleLog.lastCall.args[0]).to.equal('\u001b[1m\u001b[36mACTION_type\u001b[39m\u001b[22m')
   })
 
+  it('should console log action type', () => {
+    sandbox.stub(console, 'log')
+    const backup = Logger.config()
+    Logger.config({
+      consoleLog: null
+    })
+
+    const preReduce = Logger.getPreReduce()
+    preReduce.output.onValue()
+    preReduce.input.push({ action: { id: Date.now(), type: 'type' }})
+
+    const consoleLogCalled = console.log.called
+    const consoleLogFirstArg = console.log.lastCall.args[0]
+    sandbox.restore()
+    chai.expect(consoleLogCalled).to.be.true
+    chai.expect(consoleLogFirstArg).to.equal('\u001b[1m\u001b[36mACTION_type\u001b[39m\u001b[22m')
+    Logger.config(backup)
+  })
+
   it('should log action dispatch', () => {
     const preReduce = Logger.getPreReduce()
     preReduce.output.onValue()
@@ -118,90 +138,104 @@ describe('Logger', () => {
     chai.expect(consoleLog.calledWith('next state:', 'next')).to.be.true
   })
 
-  it('should console log', () => {
-    sandbox.stub(console, 'log')
-    Logger.config({ consoleLog: null })
-
-    const preReduce = Logger.getPreReduce()
-    preReduce.output.onValue()
-    preReduce.input.push({ action: { id: Date.now() }})
-
-    const consoleLogCalled = console.log.called
-    sandbox.restore()
-    chai.expect(consoleLogCalled).to.be.true
-  })
-
-  it('should console info', () => {
-    sandbox.stub(console, 'info')
-    Logger.config({ consoleInfo: null })
-
-    const preReduce = Logger.getPreReduce()
-    preReduce.output.onValue()
-    preReduce.input.push({ action: { id: Date.now() }})
-
-    const consoleInfoCalled = console.info.called
-    sandbox.restore()
-    chai.expect(consoleInfoCalled).to.be.true
-  })
-
-  it('should console group', () => {
-    const backup = console.group
-    console.group = sinon.stub()
-
-    const preReduce = Logger.getPreReduce()
-    preReduce.output.onValue()
-    preReduce.input.push({ action: { id: Date.now() }})
-
-    const consoleGroupCalled = console.group.called
-    console.group = backup
-    chai.expect(consoleGroupCalled).to.be.true
-  })
-
-  it('should console groupCollapsed', () => {
-    const backup = console.groupCollapsed
-    console.groupCollapsed = sinon.stub()
-    Logger.config({
-      collapsed: true
-    })
-
-    const preReduce = Logger.getPreReduce()
-    preReduce.output.onValue()
-    preReduce.input.push({ action: { id: Date.now() }})
-
-    const consoleGroupCalled = console.groupCollapsed.called
-    console.groupCollapsed = backup
-    chai.expect(consoleGroupCalled).to.be.true
-  })
-
-  it('should console groupEnd', () => {
-    const backup = console.groupEnd
-    console.groupEnd = sinon.stub()
-
-    const preReduce = Logger.getPreReduce()
-    preReduce.output.onValue()
-    preReduce.input.push({ action: { id: Date.now() }})
-
-    const consoleGroupEndCalled = console.groupEnd.called
-    console.groupEnd = backup
-    chai.expect(consoleGroupEndCalled).to.be.true
-  })
-
   it('should configure to collapse', () => {
+    const backup = Logger.config()
     Logger.config({
       collapsed: true
     })
 
     chai.expect(Logger.config()).to.have.property('collapsed')
       .and.is.true
+    Logger.config(backup)
   })
 
   it('should configure to custom predicate to log', () => {
+    const backup = Logger.config()
     Logger.config({
       predicate: sinon.stub().returns(false)
     })
 
     const shouldLog = Logger.config().predicate({})
     chai.expect(shouldLog).to.be.false
+    Logger.config(backup)
+  })
+
+  describe('with jsdom', () => {
+
+    beforeEach(() => {
+      const dom = new JSDOM('<html></html>')
+      global.window = dom.window
+      global.document = dom.window.document
+      global.Element = dom.window.Element
+
+      sandbox.stub(console, 'log')
+      sandbox.stub(console, 'info')
+      sandbox.stub(console, 'group')
+      sandbox.stub(console, 'groupCollapsed')
+      sandbox.stub(console, 'groupEnd')
+
+      Logger.config({
+        consoleLog: null,
+        consoleInfo: null
+      })
+    })
+
+    it('should console log', () => {
+      const preReduce = Logger.getPreReduce()
+      preReduce.output.onValue()
+      preReduce.input.push({ action: { id: Date.now() }})
+
+      const consoleLogCalled = console.log.called
+      sandbox.restore()
+      chai.expect(consoleLogCalled).to.be.true
+    })
+
+    it('should console info', () => {
+      const preReduce = Logger.getPreReduce()
+      preReduce.output.onValue()
+      preReduce.input.push({ action: { id: Date.now() }})
+
+      const consoleInfoCalled = console.info.called
+      sandbox.restore()
+      chai.expect(consoleInfoCalled).to.be.true
+    })
+
+    it('should console group', () => {
+      const preReduce = Logger.getPreReduce()
+      preReduce.output.onValue()
+      preReduce.input.push({ action: { id: Date.now() }})
+
+      const consoleGroupCalled = console.group.called
+      sandbox.restore()
+      chai.expect(consoleGroupCalled).to.be.true
+    })
+
+    it('should console groupCollapsed', () => {
+      const backup = Logger.config()
+      Logger.config({
+        collapsed: true
+      })
+
+      const preReduce = Logger.getPreReduce()
+      preReduce.output.onValue()
+      preReduce.input.push({ action: { id: Date.now() }})
+
+      const consoleGroupCollapsedCalled = console.groupCollapsed.called
+      sandbox.restore()
+      chai.expect(consoleGroupCollapsedCalled).to.be.true
+      Logger.config(backup)
+    })
+
+    it('should console groupEnd', () => {
+      const preReduce = Logger.getPreReduce()
+      preReduce.output.onValue()
+      preReduce.input.push({ action: { id: Date.now() }})
+
+      const consoleGroupEndCalled = console.groupEnd.called
+      sandbox.restore()
+      chai.expect(consoleGroupEndCalled).to.be.true
+    })
+
   })
 
   afterEach(() => {
