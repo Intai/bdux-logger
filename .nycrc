@@ -1,0 +1,17 @@
+{
+  "reporter": [
+    "html",
+    "lcov"
+  ],
+  "extension": [
+    ".js"
+  ],
+  "exclude": [
+    "src/index.js",
+    "src/**/*.spec.js"
+  ],
+  "temp-dir": "./coverage/tmp",
+  "report-dir": "./coverage",
+  "sourceMap": false,
+  "instrument": false
+}

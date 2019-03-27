@@ -11,7 +11,7 @@ describe('Logger', () => {
   let sandbox, consoleLog, consoleInfo
 
   beforeEach(() => {
-    sandbox = sinon.sandbox.create()
+    sandbox = sinon.createSandbox()
     consoleLog = sinon.stub()
     consoleInfo = sinon.stub()
 
