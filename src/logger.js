@@ -1,18 +1,18 @@
-import * as R from 'ramda'
+import {
+  complement,
+  ifElse,
+  merge,
+  pathEq,
+  when,
+} from 'ramda'
 import Bacon from 'baconjs'
 
 var boldCyan = (text) => (
   `\x1b[1m\x1b[36m${text}\x1b[39m\x1b[22m`
 )
 
-const hasNoSkipLog = R.complement(
-  R.pathEq(['action', 'skipLog'], true)
-)
-
-const mergeConfig = R.ifElse(
-  R.pipe(R.nthArg(1), R.is(Object)),
-  R.merge,
-  R.nthArg(0)
+const hasNoSkipLog = complement(
+  pathEq(['action', 'skipLog'], true)
 )
 
 export const config = (() => {
@@ -22,7 +22,7 @@ export const config = (() => {
   }
 
   return (addition) => (
-    params = mergeConfig(params, addition)
+    params = merge(params, addition)
   )
 })()
 
@@ -41,10 +41,6 @@ const hasConsoleGroup = () => (
   typeof window !== 'undefined'
     && typeof console.group === 'function'
     && typeof console.groupCollapsed === 'function'
-)
-
-const hasConsoleGroupEnd = () => (
-  typeof console.groupEnd === 'function'
 )
 
 const callConsoleGroup = (description) => (
@@ -72,23 +68,15 @@ const consoleInfo = (...args) => (
     : console.info.apply(console, args)
 )
 
-const consoleGroup = R.ifElse(
+const consoleGroup = ifElse(
   hasConsoleGroup,
   callConsoleGroup,
   callConsoleGroupLog
 )
 
-const callConsoleGroupEnd = () => (
-  console.groupEnd()
-)
-
-const consoleGroupEnd = R.partial(
-  R.ifElse(
-    hasConsoleGroupEnd,
-    callConsoleGroupEnd,
-    R.F
-  ),
-  [null]
+const consoleGroupEnd = () => (
+  typeof console.groupEnd === 'function'
+    && console.groupEnd()
 )
 
 // log only once for each action.
@@ -111,15 +99,15 @@ const logPostReduceToConsole = ({ name, state, nextState }) => {
 }
 
 const shouldLog = (...args) => (
-  R.apply(config().predicate, args)
+  config().predicate(...args)
 )
 
-const logPreReduce = R.when(
+const logPreReduce = when(
   shouldLog,
   logPreReduceToConsole
 )
 
-const logPostReduce = R.when(
+const logPostReduce = when(
   shouldLog,
   logPostReduceToConsole
 )

@@ -4,7 +4,7 @@ import chai from 'chai'
 import sinon from 'sinon'
 import Bacon from 'baconjs'
 import { JSDOM } from 'jsdom'
-import * as Logger from './main'
+import * as Logger from './index'
 
 describe('Logger', () => {
 
