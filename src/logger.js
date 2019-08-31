@@ -5,7 +5,7 @@ import {
   pathEq,
   when,
 } from 'ramda'
-import Bacon from 'baconjs'
+import * as Bacon from 'baconjs'
 
 var boldCyan = (text) => (
   `\x1b[1m\x1b[36m${text}\x1b[39m\x1b[22m`
