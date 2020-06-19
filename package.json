@@ -29,26 +29,26 @@
   },
   "homepage": "https://github.com/Intai/bdux-logger",
   "dependencies": {
-    "ramda": "^0.26.1"
+    "ramda": "^0.27.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.5.5",
-    "@babel/preset-env": "^7.5.5",
-    "@babel/register": "^7.5.5",
-    "babel-plugin-istanbul": "^5.2.0",
-    "baconjs": "^3.0.10",
+    "@babel/core": "^7.10.3",
+    "@babel/preset-env": "^7.10.3",
+    "@babel/register": "^7.10.3",
+    "babel-plugin-istanbul": "^6.0.0",
+    "baconjs": "^3.0.13",
     "chai": "^4.2.0",
-    "coveralls": "^3.0.6",
-    "cross-env": "^5.2.0",
+    "coveralls": "^3.1.0",
+    "cross-env": "^7.0.2",
     "del": "^5.1.0",
-    "eslint": "^6.3.0",
+    "eslint": "^7.3.0",
     "gulp": "^4.0.2",
     "gulp-babel": "^8.0.0",
     "gulp-eslint": "^6.0.0",
-    "jsdom": "^15.1.1",
-    "mocha": "^6.2.0",
-    "nyc": "^14.1.1",
-    "sinon": "^7.4.1"
+    "jsdom": "^16.2.2",
+    "mocha": "^8.0.1",
+    "nyc": "^15.1.0",
+    "sinon": "^9.0.2"
   },
   "peerDependencies": {
     "baconjs": "^1.0.0 || ^2.0.0 || ^3.0.0"
