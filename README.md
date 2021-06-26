@@ -2,9 +2,9 @@
 
 A [Bdux](https://github.com/Intai/bdux) middleware to log actions and state changes.
 
-[![Build Status](https://travis-ci.org/Intai/bdux-logger.svg?branch=master)](https://travis-ci.org/Intai/bdux-logger)
+[![Build Status](https://travis-ci.com/Intai/bdux-logger.svg?branch=master)](https://travis-ci.com/Intai/bdux-logger)
 [![Coverage Status](https://coveralls.io/repos/github/Intai/bdux-logger/badge.svg?branch=master)](https://coveralls.io/github/Intai/bdux-logger?branch=master)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/846299ecaf804098870ef64eafff5345)](https://www.codacy.com/app/intai-hg/bdux-logger?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Intai/bdux-logger&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/fce29f8b6ec848a18c0016bda4e6f903)](https://www.codacy.com/gh/Intai/bdux-logger/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Intai/bdux-logger&amp;utm_campaign=Badge_Grade)
 
 ## Installation
 To install as an [npm](https://www.npmjs.com/) package:
