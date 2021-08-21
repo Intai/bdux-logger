@@ -2,7 +2,7 @@
 
 A [Bdux](https://github.com/Intai/bdux) middleware to log actions and state changes.
 
-[![Build Status](https://travis-ci.com/Intai/bdux-logger.svg?branch=master)](https://travis-ci.com/Intai/bdux-logger)
+[![Build Status](https://app.travis-ci.com/Intai/bdux-logger.svg?branch=master)](https://app.travis-ci.com/Intai/bdux-logger)
 [![Coverage Status](https://coveralls.io/repos/github/Intai/bdux-logger/badge.svg?branch=master)](https://coveralls.io/github/Intai/bdux-logger?branch=master)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/fce29f8b6ec848a18c0016bda4e6f903)](https://www.codacy.com/gh/Intai/bdux-logger/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Intai/bdux-logger&amp;utm_campaign=Badge_Grade)
 
