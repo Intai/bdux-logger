@@ -1,7 +1,7 @@
 import {
   complement,
   ifElse,
-  merge,
+  mergeRight,
   pathEq,
   when,
 } from 'ramda'
@@ -22,7 +22,7 @@ export const config = (() => {
   }
 
   return (addition) => (
-    params = merge(params, addition)
+    params = mergeRight(params, addition)
   )
 })()
 
